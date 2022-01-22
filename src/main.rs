@@ -1,4 +1,10 @@
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use serde::Serialize;
+
+#[derive(Serialize)]
+struct MyObj {
+    name: String,
+}
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -7,7 +13,8 @@ async fn hello() -> impl Responder {
 
 #[post("/echo")]
 async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
+    let obj = MyObj { name: req_body };
+    HttpResponse::Ok().json(obj)
 }
 
 async fn manual_hello() -> impl Responder {
@@ -22,7 +29,7 @@ async fn main() -> std::io::Result<()> {
             .service(echo)
             .route("/hey", web::get().to(manual_hello))
     })
-    .bind("127.0.0.1:8080")?
+    .bind("0.0.0.0:3000")?
     .run()
     .await
 }
