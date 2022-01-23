@@ -1,7 +1,11 @@
 #[macro_use]
+extern crate env_logger;
+#[macro_use]
 extern crate diesel;
+
 use actix_web::{get, post, web::Json, App, HttpResponse, HttpServer, Responder};
 use db::establish_connection;
+use log::debug;
 use modules::account::account_service::{self};
 use serde::Serialize;
 
@@ -34,17 +38,20 @@ async fn create_account(request: Json<NewUser>) -> impl Responder {
     match result {
         Ok((user, token)) => return HttpResponse::Ok().json(user),
         Err(err) => {
-            print!("{:?}", err);
-            return HttpResponse::UnprocessableEntity().finish();
+            return HttpResponse::BadRequest().json(err.to_string());
         }
     }
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    std::env::set_var("RUST_LOG", "debug");
+    env_logger::init();
+
     env::load();
     establish_connection();
 
+    debug!("connecting server...");
     HttpServer::new(|| {
         App::new()
             .service(hello)
