@@ -4,7 +4,7 @@ extern crate diesel;
 use actix_web::{get, post, web::Json, App, HttpResponse, HttpServer, Responder};
 use db::establish_connection;
 use log::debug;
-use modules::account::account_service::{self};
+use modules::account::account_service;
 use serde::Serialize;
 
 use crate::modules::user::user_dto::NewUser;
