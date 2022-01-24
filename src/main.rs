@@ -1,6 +1,4 @@
 #[macro_use]
-extern crate env_logger;
-#[macro_use]
 extern crate diesel;
 
 use actix_web::{get, post, web::Json, App, HttpResponse, HttpServer, Responder};
